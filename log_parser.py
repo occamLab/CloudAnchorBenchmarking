@@ -18,7 +18,8 @@ class LogParser:
         return fig, ax
 
     def analyze_file(self, file_path, create_plots=True):
-        print(file_path)
+        if create_plots:
+            print(file_path)
         self.anchor_poses = {}
         with open(file_path) as f:
             d = json.load(f)
@@ -37,8 +38,8 @@ class LogParser:
             anchor_resolutions = list(filter(lambda x: x['cloudID'] == cloudID, resolutions))
             self.anchor_poses[cloudID] = np.asarray(list(map(lambda x: x['pose'], anchor_resolutions))).reshape(-1, 4, 4).swapaxes(1, 2)
             map_poses = np.asarray(list(map(lambda x: x['mapPose'], anchor_resolutions))).reshape(-1, 4, 4).swapaxes(1, 2)
-            print(self.anchor_poses[cloudID].shape)
             if create_plots:
+                print(self.anchor_poses[cloudID].shape)
                 plt.scatter(self.anchor_poses[cloudID][:,2,3], self.anchor_poses[cloudID][:,0,3], color='k')
                 plt.quiver(self.anchor_poses[cloudID][:,2,3],
                            self.anchor_poses[cloudID][:,0,3],
